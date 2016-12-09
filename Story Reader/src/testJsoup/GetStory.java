@@ -200,17 +200,20 @@ public class GetStory {
 		}
 		return sb.toString();
 	}
-	
 }
-class Section{
+
+class Section {
+	
 	private Integer id;
 	private String href;
 	private String title;
+	
 	public Section(Integer id, String href, String title) {
 		this.id = id;
 		this.href = href;
 		this.title = title;
 	}
+	
 	public Integer getId() {
 		return id;
 	}
