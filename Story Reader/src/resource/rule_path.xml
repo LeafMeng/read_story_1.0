@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<storyweb>
+	<website base="http://www.biqugezw.com">
+		<book name="">
+			<catalog-url>http://www.biqugezw.com/3_3096/</catalog-url>
+			<catalog-path child="a" url="href" title="text">
+				<path type="id">list</path>
+				<path type="tag" index=""></path>
+			</catalog-path>
+			<content-path title="html">
+				<path type="class" index="0">content_read</path>
+				<path type="class" index="0">box_con</path>
+				<path type="class" index="0">bookname</path>
+				<path type="id">content</path>
+			</content-path>
+		</book>
+	</website>
+</storyweb>
