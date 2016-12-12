@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <storyweb>
-	<website base="http://www.biqugezw.com">
-		<book name="">
+	<website base="http://www.biqugezw.com" name="笔趣阁中文网">
+		<book name="一念永恒">
 			<catalog-url>http://www.biqugezw.com/3_3096/</catalog-url>
-			<catalog-path child="a" url="href" title="text">
+			<catalog-path child="0" url="href" title="text">
 				<path type="id">list</path>
-				<path type="tag" index=""></path>
+				<path type="tag" index="">dd</path>
 			</catalog-path>
 			<content-path title="html">
 				<path type="class" index="0">content_read</path>

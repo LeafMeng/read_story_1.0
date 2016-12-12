@@ -2,20 +2,20 @@ package SiteBean;
 
 public class Section {
 	
-	private Long id;
+	private Integer id;
 	private String href;
 	private String title;
 	
-	public Section(Long id, String href, String title) {
+	public Section(Integer id, String href, String title) {
 		this.id = id;
 		this.href = href;
 		this.title = title;
 	}
 	
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	public String getHref() {
@@ -30,4 +30,11 @@ public class Section {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
+	@Override
+	public String toString() {
+		return "{ id=" + id + ",href=" + href + ",title=" + title + "}";
+	}
+	
+	
 }

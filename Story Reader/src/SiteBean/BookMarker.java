@@ -24,5 +24,9 @@ public class BookMarker {
 	public void setBook(Book book) {
 		this.book = book;
 	}
+	@Override
+	public String toString() {
+		return "{ " + this.book.getName() + "," + this.siteName + "," + this.siteUrl + "}";
+	}
 	
 }
