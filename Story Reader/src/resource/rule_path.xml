@@ -10,7 +10,6 @@
 			<content-path title="html">
 				<path type="class" index="0">content_read</path>
 				<path type="class" index="0">box_con</path>
-				<path type="class" index="0">bookname</path>
 				<path type="id">content</path>
 			</content-path>
 		</book>

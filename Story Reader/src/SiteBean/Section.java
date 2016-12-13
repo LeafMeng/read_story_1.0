@@ -1,40 +1,43 @@
 package SiteBean;
 
 public class Section {
-	
-	private Integer id;
-	private String href;
 	private String title;
+	private String url;
+	private String content;
 	
-	public Section(Integer id, String href, String title) {
-		this.id = id;
-		this.href = href;
+	
+	public Section() {
+		super();
+	}
+
+	public Section(String title, String url, String content) {
 		this.title = title;
+		this.url = url;
+		this.content = content;
 	}
 	
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	public String getHref() {
-		return href;
-	}
-	public void setHref(String href) {
-		this.href = href;
-	}
 	public String getTitle() {
 		return title;
 	}
 	public void setTitle(String title) {
 		this.title = title;
 	}
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
 
 	@Override
 	public String toString() {
-		return "{ id=" + id + ",href=" + href + ",title=" + title + "}";
+		return title + " - " + url + "\n" + content;
 	}
-	
 	
 }

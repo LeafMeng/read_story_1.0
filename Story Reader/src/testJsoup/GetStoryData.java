@@ -11,6 +11,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import SiteBean.BookMarker;
+import SiteBean.Catalog;
 import SiteBean.Section;
 import XMLBean.Book;
 import XMLBean.Path;
@@ -39,8 +40,13 @@ public class GetStoryData extends SoupEntry {
 		List<BookMarker> bookMarker = gsd.getBookMarker();
 		for(BookMarker bm : bookMarker){
 			System.out.println(bm.toString());
-			gsd.processMenu(bm);
-			System.out.println("***********************");
+			Map<Integer, Catalog> nodes = gsd.processMenu(bm);
+
+			for(Entry<Integer, Catalog> e : nodes.entrySet()){
+				System.out.println(e.getKey()+", "+e.getValue().toString());
+			}
+			System.out.println("***********************\n");
+			System.out.println(gsd.processCurSection(nodes.get(10)));
 		}
 		
 	}
@@ -67,45 +73,78 @@ public class GetStoryData extends SoupEntry {
 		return bookMarkers;
 	}
 	
-	public void processMenu(BookMarker bookMarker){
+	public Map<Integer, Catalog> processMenu(BookMarker bookMarker){
 		Book book = bookMarker.getBook();
-		String end = book.getCatalogEndNode();
 		List<Path> paths = book.getCatalogPaths();
-		String urlAttr = book.getCatalogUrlAttr();
-		String valAttr = book.getCatalogValAttr();
-		Map<Integer,Section> map = new HashMap<Integer, Section>();
 		
 		path = book.getCatalogUrl();
 		connectTo();
-		Map<Integer, Section> nodes = handleCatalogEnd(getElementsByPath(paths, document), end, urlAttr, valAttr);
-		for(Entry<Integer, Section> e : nodes.entrySet()){
-			System.out.println(e.getKey()+", "+e.getValue().toString());
-		}
+		
+		Map<Integer, Catalog> nodes = handleCatalogEnd(getElementsByPath(paths, document), book,bookMarker.getSiteUrl());
+		return nodes;
 	}
 	
-	public Map<Integer, Section> handleCatalogEnd(Elements eles, String endIndex, String urlAttr, String valAttr) {
-		Map<Integer,Section> map = new HashMap<Integer, Section>();
+	public Map<Integer, Catalog> handleCatalogEnd(Elements eles, Book book, String baseUrl) {
+		String endIndex = book.getCatalogEndNode();
+		String urlAttr = book.getCatalogUrlAttr();
+		String valAttr = book.getCatalogValAttr();
+		Map<Integer,Catalog> map = new HashMap<Integer, Catalog>();
 		for (int i = 0; i < eles.size(); i++) {
 			Element ele = eles.get(i);
-			if(endIndex != null && !endIndex.equals("")){
-				Element end = ele.child(Integer.parseInt(endIndex));
-				String href = "";
-				String content = "";
-				if(urlAttr.equals("html") || urlAttr.equals("text")){
-					href = end.text();
-				} else {
-					href = end.attr(urlAttr);
-				}
-				if(valAttr.equals("html") || valAttr.equals("text")){
-					content = end.text();
-				} else {
-					content = end.attr(valAttr);
-				}
-				Section sec = new Section(i, href, content);
-				map.put(i+1, sec);
+			Map<String, String> tmp = handleEnd(ele, endIndex, urlAttr, valAttr);
+			String href = tmp.get("href");
+			if (!href.equals("") && href.indexOf("http") < 0) {
+				href = baseUrl + href;
 			}
+			Catalog cat = new Catalog(i, href, tmp.get("content"), book.getContentEndNode(),book.getContentUrlAttr(),book.getContentValAttr(),book.getContentPaths());
+			map.put(i+1, cat);
 		}
 		return map;
+	}
+	
+	public Section processCurSection(Catalog cat) {
+		List<Path> paths = cat.getContentPaths();
+		
+		setPath(cat.getHref());
+		connectTo();
+		
+		return handleSectionEnd(getElementsByPath(paths, getDocument()),cat);
+	}
+	
+	public Section handleSectionEnd(Elements elements, Catalog cat) {
+		String end = cat.getContentEndNode();
+		String urlAttr = cat.getContentUrlAttr();
+		String valAttr = cat.getContentValAttr();
+
+		StringBuffer content = new StringBuffer();
+		for (Element ele : elements) {
+			Map<String, String> map = handleEnd(ele, end, urlAttr, valAttr);
+			content.append(map.get("content"));
+		}
+		
+		return new Section(cat.getTitle(), cat.getHref(), content.toString());
+	}
+	
+	public Map<String, String> handleEnd(Element ele, String endIndex, String urlAttr, String valAttr) {
+		Map<String, String> result = new HashMap<String, String>();
+		Element end = ele;
+		if(endIndex != null && !endIndex.equals("")){
+			end = ele.child(Integer.parseInt(endIndex));
+		}
+		
+		if(urlAttr.equals("html") || urlAttr.equals("text")){
+			result.put("href", end.text());
+		} else if(!urlAttr.equals("")){
+			result.put("href", end.attr(urlAttr));
+		}
+		
+		if(valAttr.equals("html") || valAttr.equals("text")){
+			result.put("content", end.text());
+		} else if(!valAttr.equals("")){
+			result.put("content", end.attr(valAttr));
+		}
+		
+		return result;
 	}
 	
 	public Elements getElementsByPath(List<Path> paths, Document doc) {
@@ -118,13 +157,10 @@ public class GetStoryData extends SoupEntry {
 	}
 	
 	public Elements getElementsByPathsAndElement(List<Path> paths, Elements eles) {
-		Elements result = new Elements();
-		
 		for (int i = 0; i < paths.size(); i++) {
-			result.addAll(getElementsByPathAndElements(paths.get(i), eles));
+			eles = getElementsByPathAndElements(paths.get(i), eles);
 		}
-
-		return result;
+		return eles;
 	}
 	
 	public Elements getElementsByPathAndElements(Path path, Elements eles) {

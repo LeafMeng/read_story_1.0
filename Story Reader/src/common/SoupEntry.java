@@ -15,10 +15,14 @@ public class SoupEntry implements ConnectionEntry {
 	 * @return
 	 */
 	public void connectTo(){
-		try {
-			document = Jsoup.connect(path).get();
-		} catch (IOException e) {
-			e.printStackTrace();
+		boolean flag = true;
+		while(flag){
+			try {
+				document = Jsoup.connect(path).get();
+				flag = false;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

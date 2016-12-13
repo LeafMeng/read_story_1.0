@@ -1,11 +1,16 @@
 package SiteBean;
 
+import java.util.List;
+
 import XMLBean.Book;
+import XMLBean.Path;
 
 public class BookMarker {
+	
 	private String siteName;
 	private String siteUrl;
 	private Book book;
+	
 	public String getSiteName() {
 		return siteName;
 	}
